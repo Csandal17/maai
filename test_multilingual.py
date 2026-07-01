@@ -18,8 +18,8 @@ description_es = (
 record = intake(description_es, language="es")
 result = normalise(record["verbatim_description"])
 
+print(f"\nDETECTED LANGUAGE: {result['detected_language']}")
 print("\nHER WORDS (original language)  →  CLINICAL TERMS (English)\n")
 for item in result["items"]:
     print(f'  "{item["verbatim"]}"')
     print(f'   → {item["clinical"]}\n')
-    

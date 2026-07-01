@@ -23,9 +23,11 @@ Hard rules:
 - NEVER diagnose, name conditions, judge severity, or draw conclusions. You map language only — the clinician interprets.
 - If the input is not in English, map to English clinical terms but keep the verbatim phrase exactly as written, in its original language.
 - Only map what is actually stated. Never infer symptoms that were not described.
+- Detect the language the person wrote in and report it in plain English (e.g. "English", "Spanish", "Bengali").
 
 Return ONLY valid JSON — no preamble, no markdown fences — in exactly this shape:
 {
+  "detected_language": "the language she wrote in, in English",
   "items": [
     {"verbatim": "their exact words", "clinical": "clinical term(s)"}
   ]
@@ -33,7 +35,8 @@ Return ONLY valid JSON — no preamble, no markdown fences — in exactly this s
 
 
 def normalise(description: str) -> dict:
-    """Take a free-text symptom description, return {'items': [...]} mapping verbatim -> clinical."""
+    """Take a free-text symptom description, return a dict with 'detected_language'
+    and 'items' (each mapping verbatim -> clinical)."""
     message = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=1024,
@@ -59,6 +62,7 @@ if __name__ == "__main__":
 
     result = normalise(test)
 
+    print(f"\nDETECTED LANGUAGE: {result['detected_language']}")
     print("\nHER WORDS  →  CLINICAL TERMS\n")
     for item in result["items"]:
         print(f'  "{item["verbatim"]}"')
