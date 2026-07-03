@@ -1,8 +1,8 @@
 ---
 title: Maai
-emoji: 🌸
-colorFrom: pink
-colorTo: gray
+emoji: ♾️
+colorFrom: gray
+colorTo: green
 sdk: gradio
 app_file: app.py
 ---
