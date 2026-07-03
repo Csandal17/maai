@@ -35,7 +35,6 @@ Return ONLY valid JSON — no preamble, no markdown fences — in exactly this s
   ]
 }"""
 
-
 def normalise(description: str) -> dict:
     """Take a free-text symptom description, return a dict with 'detected_language'
     and 'items' (each mapping verbatim -> clinical)."""
@@ -69,4 +68,3 @@ if __name__ == "__main__":
     for item in result["items"]:
         print(f'  "{item["verbatim"]}"')
         print(f'   → {item["clinical"]}\n')
-        
