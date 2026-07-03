@@ -10,9 +10,9 @@ Reuses the fpdf2 patterns proven in Lagomy.
 from pathlib import Path
 from fpdf import FPDF
 
-# macOS system font with full Unicode (incl. CJK) coverage —
-# required so her verbatim words render in ANY language.
-FONT_PATH = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
+# Noto Sans SC — free pan-Unicode font bundled in the repo, so PDFs
+# render her words in ANY language, on any machine (incl. HF Spaces).
+FONT_PATH = str(Path(__file__).parent / "fonts" / "NotoSansSC.ttf")
 
 
 def make_pdf(record: dict, output_path: str = "maai_record.pdf") -> str:
@@ -87,4 +87,3 @@ if __name__ == "__main__":
 
     path = make_pdf(build_record(test))
     print(f"\nPDF written: {path}")
-    
