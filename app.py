@@ -37,15 +37,26 @@ def run_maai(description: str):
 with gr.Blocks(title="Maai") as demo:
     gr.Markdown("# Maai")
     gr.Markdown(
-        "Describe what you've been experiencing, in your own words, in any language. "
-        "Maai prepares a record that helps you be heard — it maps your words to "
-        "clinical terms without ever replacing them, and draws no conclusions. "
-        "The clinician interprets; Maai helps you be heard."
+        "**The AI health advocate for women's cardiovascular health**\n\n"
+        "*See what time reveals.* Maai means the meaningful interval between "
+        "things — the space where health patterns emerge.\n\n"
+        "Women's heart symptoms are dismissed every day. Women are 50% more "
+        "likely than men to be misdiagnosed after a heart attack, and the "
+        "symptoms often don't look like the ones on the poster: exhaustion, "
+        "breathlessness, nausea, jaw or back pain. For women facing language "
+        "or cultural barriers, being heard is harder still.\n\n"
+        "Maai helps you be harder to dismiss. Describe what you've been "
+        "experiencing over recent days or weeks, in your own words, in any "
+        "language. Maai maps your words to clinical terms a doctor recognises — "
+        "never replacing them, never drawing conclusions. The clinician "
+        "interprets. Maai helps you be heard.\n\n"
+        "**Maai is for patterns over time, not symptoms happening right now. "
+        "If you have chest pain, breathlessness, or other symptoms now, call 999.**"
     )
 
     description = gr.Textbox(
         label="In your own words",
-        placeholder="e.g. I keep waking at 3am drenched in sweat...",
+        placeholder="e.g. For the past few weeks I've been exhausted by lunchtime, breathless going up the stairs, and there's an ache in my jaw that comes and goes...",
         lines=5,
     )
     submit = gr.Button("Prepare my record")
@@ -57,4 +68,3 @@ with gr.Blocks(title="Maai") as demo:
 
 if __name__ == "__main__":
     demo.launch()
-    
