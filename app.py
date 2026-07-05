@@ -10,12 +10,13 @@ Function today; theming (palette, Fraunces/Inter) is weekend work.
 import gradio as gr
 from chain import build_record
 from make_pdf import make_pdf
+from speak import speak_record
 
 
 def run_maai(description: str):
     """Full pipeline: description -> record -> PDF. Returns display text + PDF path."""
     if not description or not description.strip():
-        return "Please describe what you've been experiencing.", None
+        return "Please describe what you've been experiencing.", None, None
 
     record = build_record(description)
 
@@ -31,7 +32,7 @@ def run_maai(description: str):
         lines.append("")
 
     pdf_path = make_pdf(record)
-    return "\n".join(lines), pdf_path
+    return "\n".join(lines), pdf_path, record
 
 css = """
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&display=swap');
@@ -107,7 +108,19 @@ with gr.Blocks(title="Maai", theme=theme, css=css) as demo:
     record_display = gr.Textbox(label="Your advocacy record", lines=14)
     pdf_file = gr.File(label="Download for your appointment")
 
-    submit.click(fn=run_maai, inputs=description, outputs=[record_display, pdf_file])
+    record_state = gr.State()
+    listen = gr.Button("Hear my record read aloud")
+    audio_out = gr.Audio(label="Your record, read back", type="filepath")
+
+    submit.click(fn=run_maai, inputs=description,
+                 outputs=[record_display, pdf_file, record_state])
+
+    def read_aloud(record):
+        if not record:
+            raise gr.Error("Prepare a record first, then listen.")
+        return speak_record(record)
+
+    listen.click(fn=read_aloud, inputs=record_state, outputs=audio_out)
 
 if __name__ == "__main__":
     demo.launch()
