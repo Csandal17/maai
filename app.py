@@ -11,6 +11,8 @@ import gradio as gr
 from chain import build_record
 from make_pdf import make_pdf
 from speak import speak_record
+from contribute import make_contribution, save_contribution
+from aggregate import aggregate
 
 
 def run_maai(description: str):
@@ -121,6 +123,65 @@ with gr.Blocks(title="Maai", theme=theme, css=css) as demo:
         return speak_record(record)
 
     listen.click(fn=read_aloud, inputs=record_state, outputs=audio_out)
+
+    gr.Markdown("---")
+    gr.Markdown("### Contribute to what women are revealing")
+    consent = gr.Checkbox(
+        label=(
+            "Contribute your pattern (anonymous) — adds your symptom pattern, "
+            "never your words, name, or any identifying detail, to a shared "
+            "dataset of women's heart-health experiences."
+        ),
+        value=False,
+    )
+    age_band = gr.Dropdown(
+        choices=["not_given", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
+        value="not_given",
+        label="Age band (optional)",
+    )
+    contribute_btn = gr.Button("Contribute my pattern")
+    feedback = gr.Markdown()
+
+    def contribute(record, consented, band):
+        if not record:
+            raise gr.Error("Prepare a record first.")
+        if not consented:
+            raise gr.Error("Tick the consent box if you'd like to contribute — it's entirely optional.")
+        total = save_contribution(make_contribution(record, age_band=band))
+        view = aggregate()
+        top = next(iter(view["symptom_prevalence"]))
+        return (
+            f"**Your pattern joins {total - 1} others.** Together they're showing "
+            f"that *{top}* — not chest pain — is the most common signal women "
+            f"report. Thank you for helping make it visible."
+        )
+
+    contribute_btn.click(fn=contribute, inputs=[record_state, consent, age_band], outputs=feedback)
+
+    gr.Markdown("---")
+    gr.Markdown("### What women are revealing")
+    gr.Markdown(
+        "*Seeded with representative synthetic data to show what the aggregate "
+        "view reveals at scale. Descriptive only — Maai counts and reveals, "
+        "never predicts.*"
+    )
+
+    def render_aggregate():
+        view = aggregate()
+        if view["total"] == 0:
+            return "No contributions yet."
+        lines = [f"**{view['total']} contributed patterns**\n"]
+        lines.append("| Symptom | Appears in |")
+        lines.append("|---|---|")
+        for symptom, pct in view["symptom_prevalence"].items():
+            lines.append(f"| {symptom} | {pct}% |")
+        langs = ", ".join(view["languages"].keys())
+        lines.append(f"\nContributed in **{len(view['languages'])} languages**: {langs}")
+        return "\n".join(lines)
+
+    aggregate_display = gr.Markdown(render_aggregate())
+    refresh = gr.Button("Refresh the collective picture")
+    refresh.click(fn=render_aggregate, outputs=aggregate_display)
 
 if __name__ == "__main__":
     demo.launch()
