@@ -15,7 +15,7 @@ from fpdf import FPDF
 FONT_PATH = str(Path(__file__).parent / "fonts" / "NotoSansSC.ttf")
 
 
-def make_pdf(record: dict, output_path: str = "maai_record.pdf") -> str:
+def make_pdf(record: dict, annotated: dict = None, output_path: str = "maai_record.pdf") -> str:
     """Render an advocacy record dict into a PDF. Returns the file path."""
     if not Path(FONT_PATH).exists():
         raise FileNotFoundError(
@@ -59,6 +59,16 @@ def make_pdf(record: dict, output_path: str = "maai_record.pdf") -> str:
         pdf.multi_cell(w=0, h=6, text=f'    -  {item["clinical"]}', new_x="LMARGIN", new_y="NEXT")
         pdf.ln(2)
 
+    # --- SOCRATES gap-map (optional) ---
+    if annotated and annotated.get("not_yet_described"):
+        pdf.ln(2)
+        pdf.set_font("Unicode", size=12)
+        pdf.cell(w=0, h=8, text="Not yet described — the clinician may wish to ask about",
+                 new_x="LMARGIN", new_y="NEXT")
+        pdf.set_font("Unicode", size=10)
+        for dim in annotated["not_yet_described"]:
+            pdf.multi_cell(w=0, h=6, text=f"   -  {dim}", new_x="LMARGIN", new_y="NEXT")
+            
     # --- Visible guardrail ---
     pdf.ln(4)
     pdf.set_font("Unicode", size=9)

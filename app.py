@@ -45,7 +45,7 @@ def run_maai(description: str):
     lines.append("Not yet described — your doctor may ask about:")
     for dim in annotated["not_yet_described"]:
         lines.append(f"  · {dim}")
-    pdf_path = make_pdf(record)
+    pdf_path = make_pdf(record, annotated)
     return "\n".join(lines), pdf_path, record
 
 css = """
