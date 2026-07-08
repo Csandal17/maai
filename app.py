@@ -11,6 +11,7 @@ import gradio as gr
 from chain import build_record
 from make_pdf import make_pdf
 from speak import speak_record
+from socrates import annotate_socrates
 from contribute import make_contribution, save_contribution
 from aggregate import aggregate
 
@@ -33,6 +34,17 @@ def run_maai(description: str):
         lines.append(f"    →  {item['clinical']}")
         lines.append("")
 
+    annotated = annotate_socrates(record)
+    lines.append("")
+    lines.append("CLINICAL FRAMEWORK (SOCRATES)")
+    lines.append("")
+    for item in annotated["items"]:
+        if item["dimensions"]:
+            lines.append(f'"{item["verbatim"]}" — {", ".join(item["dimensions"])}')
+    lines.append("")
+    lines.append("Not yet described — your doctor may ask about:")
+    for dim in annotated["not_yet_described"]:
+        lines.append(f"  · {dim}")
     pdf_path = make_pdf(record)
     return "\n".join(lines), pdf_path, record
 
