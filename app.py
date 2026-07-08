@@ -80,29 +80,32 @@ with gr.Blocks(title="Maai", theme=theme, css=css) as demo:
     gr.Markdown(
         "# Maai\n"
         "*See what time reveals.*\n\n"
-        "**The AI health advocate for women's cardiovascular health**",
+        "**The AI health advocate for endometriosis**",
         elem_id="header",
     )
+
     gr.Markdown(
         "Maai means the meaningful interval between things — the space where "
         "health patterns emerge.\n\n"
-        "Women's heart symptoms are dismissed every day. Women are 50% more "
-        "likely than men to be misdiagnosed after a heart attack, and the "
-        "symptoms often don't look like the ones on the poster: exhaustion, "
-        "breathlessness, nausea, jaw or back pain. For women facing language "
-        "or cultural barriers, being heard is harder still.\n\n"
+        "Endometriosis takes an average of **9 years and 4 months** to diagnose "
+        "in the UK — and 11 years for women from ethnically diverse communities. "
+        "83% of women were told by a healthcare practitioner they were making "
+        "a fuss about nothing. Almost half visited their GP ten or more times "
+        "before anyone joined the dots.\n\n"
         "Maai helps you be harder to dismiss. Describe what you've been "
-        "experiencing over recent days or weeks, in your own words, in any "
+        "experiencing over recent weeks or months, in your own words, in any "
         "language. Maai maps your words to clinical terms a doctor recognises — "
-        "never replacing them, never drawing conclusions. The clinician "
-        "interprets. Maai helps you be heard.\n\n"
-        "**Maai is for patterns over time, not symptoms happening right now. "
-        "If you have chest pain, breathlessness, or other symptoms now, call 999.**"
+        "never replacing them, never drawing conclusions. Bring a record to "
+        "every appointment; the pattern builds. The clinician interprets. "
+        "Maai helps you be heard.\n\n"
+        "**Maai is for patterns over time, not a medical emergency. If you have "
+        "severe or sudden symptoms right now, call 111 — or 999 if it's urgent.**"
     )
+    
 
     description = gr.Textbox(
         label="In your own words",
-        placeholder="e.g. For the past few weeks I've been exhausted by lunchtime, breathless going up the stairs, and there's an ache in my jaw that comes and goes...",
+        placeholder="e.g. For months I've had a deep dragging pain low in my belly, not just during my period, and I'm exhausted all the time...",
         lines=5,
     )
     submit = gr.Button("Prepare my record")
@@ -152,8 +155,8 @@ with gr.Blocks(title="Maai", theme=theme, css=css) as demo:
         top = next(iter(view["symptom_prevalence"]))
         return (
             f"**Your pattern joins {total - 1} others.** Together they're showing "
-            f"that *{top}* — not chest pain — is the most common signal women "
-            f"report. Thank you for helping make it visible."
+            f"how often *{top}* appears in women's patterns — years before "
+            f"diagnosis. Thank you for helping make it visible."
         )
 
     contribute_btn.click(fn=contribute, inputs=[record_state, consent, age_band], outputs=feedback)
@@ -184,4 +187,5 @@ with gr.Blocks(title="Maai", theme=theme, css=css) as demo:
     refresh.click(fn=render_aggregate, outputs=aggregate_display)
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(ssr_mode=False)
+
